@@ -5,7 +5,6 @@ from multiprocessing import Pool
 
 from evo.evolution.algorithms import StochasticSolver
 from evo.evolution.objectives import ObjectiveDict
-from evo.evolution.selection.filters import NoneFilter
 from evo.listeners.listener import FileListener
 
 
@@ -82,4 +81,3 @@ if __name__ == "__main__":
                                             upper=2.0,
                                             lower=-1.0)
     best = parallel_solve(solver=solver, iterations=args.evals // solver.pop_size, config=args, listener=listener)
-    # YOUR CODE HERE
