@@ -3,8 +3,12 @@ import time
 import logging
 from multiprocessing import Pool
 
+import numpy as np
+
 from evo.evolution.algorithms import StochasticSolver
 from evo.evolution.objectives import ObjectiveDict
+from evo.evolution.operators.operator import InsertMutation, DeleteMutation
+from evo.evolution.selection.filters import NoneFilter
 from evo.listeners.listener import FileListener
 
 
@@ -27,12 +31,10 @@ def parallel_solve(solver, iterations, config, listener):
     start_time = time.time()
     for j in range(iterations):
         solutions = solver.ask()
-        print(len(solutions))
         with Pool(num_workers) as pool:
             results = pool.map(parallel_wrapper, [(config, solutions[i], i) for i in range(solver.pop_size)])
         fitness_list = [value for _, value in sorted(results, key=lambda x: x[0])]
         solver.tell(fitness_list)
-        print(len(solver.pop))
         result = solver.result()  # first element is the best solution, second element is the best fitness
         if (j + 1) % 10 == 0:
             logging.warning("fitness at iteration {}: {}".format(j + 1, result[1]))

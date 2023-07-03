@@ -1,5 +1,6 @@
 import abc
 import copy
+import random
 
 import numpy as np
 
@@ -53,6 +54,38 @@ class GaussianMutation(GeneticOperator):
         for i in range(len(child)):
             child[i] += mutation[i]
         return child
+
+    def get_arity(self):
+        return 1
+
+
+class InsertMutation(GeneticOperator):
+
+    def __init__(self, genotype_filter, lower, upper):
+        super().__init__(genotype_filter)
+        self.lower = lower
+        self.upper = upper
+
+    def propose(self, *args) -> np.ndarray:
+        if len(args) != 1:
+            raise ValueError("Need one parent for mutation")
+        child = copy.deepcopy(args[0][0])
+        return np.append(child, np.random.uniform(low=self.lower, high=self.upper, size=1))
+
+    def get_arity(self):
+        return 1
+
+
+class DeleteMutation(GeneticOperator):
+
+    def __init__(self, genotype_filter):
+        super().__init__(genotype_filter)
+
+    def propose(self, *args) -> np.ndarray:
+        if len(args) != 1:
+            raise ValueError("Need one parent for mutation")
+        child = copy.deepcopy(args[0][0])
+        return np.delete(child, random.randint(0, len(child) - 1))
 
     def get_arity(self):
         return 1
