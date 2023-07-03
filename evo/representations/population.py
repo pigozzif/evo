@@ -6,18 +6,16 @@ import numpy as np
 
 from evo.representations.factory import GenotypeFactory
 from evo.evolution.objectives import ObjectiveDict
-from evo.representations.mapper import SolutionMapper
 from evo.utils.utilities import dominates
 
 
 @total_ordering
 class Individual(object):
 
-    def __init__(self, id: int, genotype, solution, comparator, fitness: dict = None, age: int = 0,
+    def __init__(self, id: int, genotype, comparator, fitness: dict = None, age: int = 0,
                  evaluated: bool = False):
         self.id = id
         self.genotype = genotype
-        self.solution = solution
         self.comparator = comparator
         self.fitness = fitness
         self.age = age
@@ -83,10 +81,9 @@ class ParetoComparator(Comparator):
 
 class Population(object):
 
-    def __init__(self, pop_size: int, genotype_factory: GenotypeFactory, solution_mapper: SolutionMapper,
-                 objectives_dict: ObjectiveDict, comparator: str):
+    def __init__(self, pop_size: int, genotype_factory: GenotypeFactory, objectives_dict: ObjectiveDict,
+                 comparator: str):
         self.genotype_factory = genotype_factory
-        self.solution_mapper = solution_mapper
         self.objectives_dict = objectives_dict
         self.comparator = Comparator.create_comparator(name=comparator, objective_dict=objectives_dict)
         self._individuals = []
@@ -116,7 +113,6 @@ class Population(object):
     def add_individual(self, genotype) -> None:
         self._individuals.append(Individual(id=self._max_id,
                                             genotype=genotype,
-                                            solution=self.solution_mapper(genotype),
                                             comparator=self.comparator))
         self._max_id += 1
 

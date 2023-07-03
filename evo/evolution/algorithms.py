@@ -8,7 +8,6 @@ from .operators.operator import GeneticOperator
 from .selection.filters import Filter
 from .selection.selector import Selector
 from ..representations.factory import GenotypeFactory
-from ..representations.mapper import SolutionMapper
 from ..representations.population import Population, Individual, Comparator
 from ..utils.utilities import weighted_random_by_dct
 
@@ -49,7 +48,6 @@ class PopulationBasedSolver(StochasticSolver, ABC):
                  num_params: int,
                  pop_size: int,
                  genotype_factory: str,
-                 solution_mapper: str,
                  objectives_dict: ObjectiveDict,
                  remap: bool,
                  genetic_operators: Dict[str, float],
@@ -63,7 +61,6 @@ class PopulationBasedSolver(StochasticSolver, ABC):
                               genotype_factory=GenotypeFactory.create_factory(name=genotype_factory,
                                                                               genotype_filter=Filter.create_filter(
                                                                                   genotype_filter), **kwargs),
-                              solution_mapper=SolutionMapper.create_mapper(name=solution_mapper, **kwargs),
                               objectives_dict=objectives_dict,
                               comparator=comparator)
         self.genetic_operators = {GeneticOperator.create_genetic_operator(name=k,
@@ -77,14 +74,13 @@ class PopulationBasedSolver(StochasticSolver, ABC):
 
 class GeneticAlgorithm(PopulationBasedSolver):
 
-    def __init__(self, seed, num_params, pop_size, genotype_factory, solution_mapper, objectives_dict,
-                 survival_selector: str, parent_selector: str, offspring_size: int, overlapping: bool, remap,
-                 genetic_operators, genotype_filter, **kwargs):
+    def __init__(self, seed, num_params, pop_size, genotype_factory, objectives_dict, survival_selector: str,
+                 parent_selector: str, offspring_size: int, overlapping: bool, remap, genetic_operators,
+                 genotype_filter, **kwargs):
         super().__init__(seed=seed,
                          num_params=num_params,
                          pop_size=pop_size,
                          genotype_factory=genotype_factory,
-                         solution_mapper=solution_mapper,
                          objectives_dict=objectives_dict,
                          remap=remap,
                          genetic_operators=genetic_operators,
