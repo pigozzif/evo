@@ -30,6 +30,10 @@ class GeneticOperator(object):
     def create_genetic_operator(cls, name: str, genotype_filter: Filter, **kwargs):
         if name == "gaussian_mut":
             return GaussianMutation(genotype_filter=genotype_filter, mu=kwargs["mu"], sigma=kwargs["sigma"])
+        elif name == "insert_mut":
+            return InsertMutation(genotype_filter=genotype_filter, lower=kwargs["lower"], upper=kwargs["upper"])
+        elif name == "delete_mut":
+            return DeleteMutation(genotype_filter=genotype_filter)
         elif name == "geometric_cx":
             return GeometricCrossover(genotype_filter=genotype_filter, upper=kwargs["upper"], lower=kwargs["lower"],
                                       mu=kwargs["mu"], sigma=0.1)
