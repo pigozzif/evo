@@ -67,7 +67,6 @@ if __name__ == "__main__":
                                             num_params=args.n_params,
                                             pop_size=100,
                                             genotype_factory="uniform_float",
-                                            solution_mapper="direct",
                                             objectives_dict=objectives_dict,
                                             offspring_size=100,
                                             remap=False,
