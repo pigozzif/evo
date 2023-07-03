@@ -1,21 +1,17 @@
 import argparse
+import multiprocessing
 import time
 import logging
-from multiprocessing import Pool
-
-import numpy as np
 
 from evo.evolution.algorithms import StochasticSolver
 from evo.evolution.objectives import ObjectiveDict
-from evo.evolution.operators.operator import InsertMutation, DeleteMutation
-from evo.evolution.selection.filters import NoneFilter
 from evo.listeners.listener import FileListener
 
 
 def parse_args():
     parser = argparse.ArgumentParser(prog="BiofilmSimulation", description="Simulate a B. subtilis biofilm")
     parser.add_argument("--s", type=int, default=0, help="seed")
-    parser.add_argument("--np", type=int, default=1, help="parallel optimization processes")
+    parser.add_argument("--np", type=int, default=multiprocessing.cpu_count(), help="parallel optimization processes")
     parser.add_argument("--solver", type=str, default="afpo", help="solver")
     parser.add_argument("--n_params", type=int, default=2, help="solution size")
     parser.add_argument("--evals", type=int, default=2500, help="fitness evaluations")
@@ -31,7 +27,7 @@ def parallel_solve(solver, iterations, config, listener):
     start_time = time.time()
     for j in range(iterations):
         solutions = solver.ask()
-        with Pool(num_workers) as pool:
+        with multiprocessing.Pool(num_workers) as pool:
             results = pool.map(parallel_wrapper, [(config, solutions[i], i) for i in range(solver.pop_size)])
         fitness_list = [value for _, value in sorted(results, key=lambda x: x[0])]
         solver.tell(fitness_list)
