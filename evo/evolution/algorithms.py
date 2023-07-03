@@ -126,13 +126,12 @@ class GeneticAlgorithm(PopulationBasedSolver):
 
 class AFPO(GeneticAlgorithm):
 
-    def __init__(self, seed, num_params, pop_size, genotype_factory, solution_mapper, objectives_dict,
-                 offspring_size: int, remap, genetic_operators, genotype_filter, **kwargs):
+    def __init__(self, seed, num_params, pop_size, genotype_factory, objectives_dict, offspring_size: int,
+                 remap, genetic_operators, genotype_filter, **kwargs):
         super().__init__(seed=seed,
                          num_params=num_params,
                          pop_size=pop_size,
                          genotype_factory=genotype_factory,
-                         solution_mapper=solution_mapper,
                          objectives_dict=objectives_dict,
                          remap=remap,
                          genetic_operators=genetic_operators,
@@ -174,11 +173,13 @@ class AFPO(GeneticAlgorithm):
 
 class NSGAII(PopulationBasedSolver):
 
-    def __init__(self, seed, pop_size, genotype_factory, solution_mapper, offspring_size: int, remap,
-                 genetic_operators, genotype_filter, **kwargs):
-        super().__init__(seed=seed, pop_size=pop_size, genotype_factory=genotype_factory,
-                         solution_mapper=solution_mapper, remap=remap,
-                         genetic_operators=genetic_operators, genotype_filter=genotype_filter,
+    def __init__(self, seed, pop_size, genotype_factory, offspring_size: int, remap, genetic_operators,
+                 genotype_filter, **kwargs):
+        super().__init__(seed=seed, pop_size=pop_size,
+                         genotype_factory=genotype_factory,
+                         remap=remap,
+                         genetic_operators=genetic_operators,
+                         genotype_filter=genotype_filter,
                          comparator="pareto", **kwargs)
         self.offspring_size = offspring_size
         self.fronts = {}
