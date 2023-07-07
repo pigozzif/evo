@@ -9,7 +9,7 @@ from evo.listeners.listener import FileListener
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog="BiofilmSimulation", description="Simulate a B. subtilis biofilm")
+    parser = argparse.ArgumentParser()
     parser.add_argument("--s", type=int, default=0, help="seed")
     parser.add_argument("--np", type=int, default=multiprocessing.cpu_count(), help="parallel optimization processes")
     parser.add_argument("--solver", type=str, default="afpo", help="solver")
@@ -19,15 +19,12 @@ def parse_args():
 
 
 def parallel_solve(solver, iterations, config, listener):
-    num_workers = config.np
-    if solver.pop_size % num_workers != 0:
-        raise RuntimeError("better to have n. workers divisor of pop size")
     best_result = None
     best_fitness = float("-inf")
     start_time = time.time()
     for j in range(iterations):
         solutions = solver.ask()
-        with multiprocessing.Pool(num_workers) as pool:
+        with multiprocessing.Pool(config.np) as pool:
             results = pool.map(parallel_wrapper, [(config, solutions[i], i) for i in range(solver.pop_size)])
         fitness_list = [value for _, value in sorted(results, key=lambda x: x[0])]
         solver.tell(fitness_list)
@@ -55,7 +52,7 @@ def evaluate(config, solution):
 
 if __name__ == "__main__":
     args = parse_args()
-    file_name = ".".join([args.solver, str(args.s)])
+    file_name = ".".join([args.solver, str(args.s), "txt"])
     objectives_dict = ObjectiveDict()
     objectives_dict.add_objective(name="fitness", maximize=False, best_value=0.0, worst_value=5.0)
     listener = FileListener(file_name=file_name, header=["iteration", "elapsed.sec", "evaluations", "best.fitness",
