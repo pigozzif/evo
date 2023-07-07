@@ -18,11 +18,13 @@ def parse_args():
     return parser.parse_args()
 
 
-def parallel_solve(solver, iterations, config, listener):
+def parallel_solve(solver, config, listener):
     best_result = None
     best_fitness = float("-inf")
     start_time = time.time()
-    for j in range(iterations):
+    evaluated = 0
+    j = 0
+    while evaluated < config.evals:
         solutions = solver.ask()
         with multiprocessing.Pool(config.np) as pool:
             results = pool.map(parallel_wrapper, [(config, solutions[i], i) for i in range(solver.pop_size)])
@@ -37,6 +39,8 @@ def parallel_solve(solver, iterations, config, listener):
         if result[1] >= best_fitness or best_result is None:
             best_result = result[0]
             best_fitness = result[1]
+        evaluated += len(solutions)
+        j += 1
     return best_result, best_fitness
 
 
@@ -74,4 +78,4 @@ if __name__ == "__main__":
                                             range=(-1, 1),
                                             upper=2.0,
                                             lower=-1.0)
-    best = parallel_solve(solver=solver, iterations=args.evals // solver.pop_size, config=args, listener=listener)
+    best = parallel_solve(solver=solver, config=args, listener=listener)
