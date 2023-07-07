@@ -34,7 +34,7 @@ def parallel_solve(solver, config, listener):
         if (j + 1) % 10 == 0:
             logging.warning("fitness at iteration {}: {}".format(j + 1, result[1]))
         listener.listen(**{"iteration": j, "elapsed.sec": time.time() - start_time,
-                           "evaluations": j * solver.pop_size, "best.fitness": result[1],
+                           "evaluations": evaluated, "best.fitness": result[1],
                            "best.solution": result[0]})
         if result[1] >= best_fitness or best_result is None:
             best_result = result[0]
